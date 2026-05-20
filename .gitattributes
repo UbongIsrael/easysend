@@ -1,0 +1,13 @@
+* text=auto eol=lf
+
+*.rs text diff=rust
+*.toml text
+*.json text
+*.ts text
+*.css text
+*.html text
+*.md text
+
+*.png binary
+*.ico binary
+*.icns binary
