@@ -172,6 +172,7 @@ function fileTransferPanel({ state, dispatch }: ComponentProps): TemplateResult 
           id="remote-dir"
           placeholder="/var/www/app"
           .value=${state.remoteDir || profile?.default_remote_dir || ''}
+          @input=${(e: Event) => dispatch({ type: 'set-remote-dir', dir: (e.target as HTMLInputElement).value })}
         />
       </div>
 
