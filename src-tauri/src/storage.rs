@@ -107,10 +107,20 @@ impl Storage {
         if !path.exists() {
             return Ok(Vec::new());
         }
-        let encrypted = std::fs::read_to_string(&path)?;
-        let json = self.decrypt(&encrypted)?;
-        let data: ProfilesData = serde_json::from_str(&json)?;
-        Ok(data.profiles)
+        let encrypted = match std::fs::read_to_string(&path) {
+            Ok(c) => c,
+            Err(_) => return Ok(Vec::new()),
+        };
+        match self.decrypt(&encrypted) {
+            Ok(json) => match serde_json::from_str::<ProfilesData>(&json) {
+                Ok(data) => Ok(data.profiles),
+                Err(_) => Ok(Vec::new()),
+            },
+            Err(e) => {
+                eprintln!("Warning: failed to decrypt profiles file ({}), starting fresh.", e);
+                Ok(Vec::new())
+            }
+        }
     }
 
     pub fn save_profiles(&self, profiles: &[Profile]) -> Result<()> {
