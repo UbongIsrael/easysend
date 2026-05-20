@@ -152,30 +152,11 @@ function fileTransferPanel({ state, dispatch }: ComponentProps): TemplateResult 
 
       <div class="transfer-row">
         <label>Local Files</label>
-        <div
-          class="drop-zone"
-          @dragover=${(e: DragEvent) => e.preventDefault()}
-          @drop=${(e: DragEvent) => {
-            e.preventDefault();
-            const files = e.dataTransfer?.files;
-            if (files && files.length > 0) {
-              const paths = Array.from(files).map((f) => (f as any).path).filter(Boolean);
-              if (paths.length > 0) {
-                dispatch({ type: 'set-local-files', paths });
-              }
-            }
-          }}
-        >
-          <input
-            type="file"
-            id="file-picker"
-            multiple
-            style="display:none"
-          />
-          <button class="btn-ghost" type="button" @click=${() => document.getElementById('file-picker')?.click()}>
+        <div class="drop-zone">
+          <button class="btn-ghost" type="button" @click=${() => dispatch({ type: 'pick-files' })}>
             Browse Files
           </button>
-          <span>or drag & drop here</span>
+          <span>or drag & drop files onto this window</span>
           ${state.localFiles.length > 0
             ? html`<div class="selected-files">
                 ${state.localFiles.map((f) => html`<div class="file-chip">${f.split('/').pop() || f.split('\\').pop()}</div>`)}

@@ -1,4 +1,5 @@
 import { invoke, isTauri } from '@tauri-apps/api/core';
+import { open } from '@tauri-apps/plugin-dialog';
 import { listen, UnlistenFn } from '@tauri-apps/api/event';
 import type { Profile, ConnectionStatus, TransferProgress } from '../types';
 
@@ -82,6 +83,13 @@ export async function connect(
 
 export async function disconnect(profileId: string): Promise<void> {
   return safeInvoke('disconnect', { profileId });
+}
+
+export async function pickFiles(): Promise<string[]> {
+  const selected = await open({ multiple: true });
+  if (!selected) return [];
+  if (Array.isArray(selected)) return selected;
+  return [selected];
 }
 
 export async function sendFiles(

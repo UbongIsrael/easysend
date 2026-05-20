@@ -124,7 +124,14 @@ async function dispatch(
       await connectionStore.disconnect(action.id);
       break;
     case 'pick-files': {
-      // Handled directly in the DOM via hidden file input
+      try {
+        const paths = await api.pickFiles();
+        if (paths.length > 0) {
+          state.localFiles = paths;
+        }
+      } catch (e) {
+        console.error('File picker failed:', e);
+      }
       break;
     }
     case 'set-local-files':
@@ -185,22 +192,15 @@ api.onTransferProgress((progress) => {
 profileStore.subscribe(() => renderApp());
 connectionStore.subscribe(() => renderApp());
 
-// Override the file input change and drag-drop to set localFiles
-document.addEventListener('change', (e) => {
-  const target = e.target as HTMLInputElement;
-  if (target.id === 'file-picker' && target.files) {
-    state.localFiles = Array.from(target.files)
-      .map((f) => (f as any).path)
-      .filter(Boolean);
+// Listen for drag-and-drop from OS (Tauri window event)
+import { listen } from '@tauri-apps/api/event';
+listen<string[]>('tauri://drag-drop', (event) => {
+  const payload = event.payload as any;
+  const paths = payload?.paths || [];
+  if (paths.length > 0) {
+    state.localFiles = paths;
     renderApp();
   }
-});
-
-document.addEventListener('input', (e) => {
-  const target = e.target as HTMLInputElement;
-  if (target.id === 'remote-dir') {
-    state.remoteDir = target.value;
-  }
-});
+}).catch(() => {});
 
 renderApp();
