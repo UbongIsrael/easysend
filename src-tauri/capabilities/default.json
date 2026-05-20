@@ -1,0 +1,9 @@
+{
+  "identifier": "default",
+  "description": "Default capability granting full access to easysend commands",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "opener:default"
+  ]
+}

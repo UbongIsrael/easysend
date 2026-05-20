@@ -168,16 +168,18 @@ async function dispatch(
 }
 
 // Load profiles on startup
-profileStore.load().then(() => renderApp());
+profileStore.load().catch((e) => {
+  console.error('Failed to load profiles:', e);
+}).then(() => renderApp());
 
 // Wire up Tauri events
 api.onConnectionStatus((status) => {
   dispatch({ type: 'connection-status', status });
-});
+}).catch((e) => console.error('Failed to listen for connection events:', e));
 
 api.onTransferProgress((progress) => {
   dispatch({ type: 'transfer-progress', progress });
-});
+}).catch((e) => console.error('Failed to listen for transfer events:', e));
 
 // Subscriptions for store changes
 profileStore.subscribe(() => renderApp());

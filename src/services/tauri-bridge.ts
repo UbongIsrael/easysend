@@ -1,6 +1,15 @@
-import { invoke } from '@tauri-apps/api/core';
+import { invoke, isTauri } from '@tauri-apps/api/core';
 import { listen, UnlistenFn } from '@tauri-apps/api/event';
 import type { Profile, ConnectionStatus, TransferProgress } from '../types';
+
+function safeInvoke<T>(cmd: string, args?: Record<string, unknown>): Promise<T> {
+  if (!isTauri()) {
+    throw new Error(
+      'Tauri bridge not available. Launch the app via `npm run dev`, not a browser.'
+    );
+  }
+  return invoke<T>(cmd, args);
+}
 
 export async function createProfile(
   name: string,
@@ -13,7 +22,7 @@ export async function createProfile(
   keyPath: string | null,
   defaultRemoteDir: string
 ): Promise<Profile> {
-  return invoke('create_profile', {
+  return safeInvoke('create_profile', {
     name,
     host,
     port,
@@ -27,11 +36,11 @@ export async function createProfile(
 }
 
 export async function listProfiles(): Promise<Profile[]> {
-  return invoke('list_profiles');
+  return safeInvoke('list_profiles');
 }
 
 export async function getProfilePassword(profileId: string): Promise<string | null> {
-  return invoke('get_profile_password', { profileId });
+  return safeInvoke('get_profile_password', { profileId });
 }
 
 export async function updateProfile(
@@ -46,7 +55,7 @@ export async function updateProfile(
   keyPath: string | null,
   defaultRemoteDir: string
 ): Promise<Profile> {
-  return invoke('update_profile', {
+  return safeInvoke('update_profile', {
     id,
     name,
     host,
@@ -61,18 +70,18 @@ export async function updateProfile(
 }
 
 export async function deleteProfile(id: string): Promise<void> {
-  return invoke('delete_profile', { id });
+  return safeInvoke('delete_profile', { id });
 }
 
 export async function connect(
   profileId: string,
   sessionPassword?: string
 ): Promise<void> {
-  return invoke('connect', { profileId, sessionPassword: sessionPassword || null });
+  return safeInvoke('connect', { profileId, sessionPassword: sessionPassword || null });
 }
 
 export async function disconnect(profileId: string): Promise<void> {
-  return invoke('disconnect', { profileId });
+  return safeInvoke('disconnect', { profileId });
 }
 
 export async function sendFiles(
@@ -81,7 +90,7 @@ export async function sendFiles(
   remoteDir: string,
   sessionPassword?: string
 ): Promise<void> {
-  return invoke('send_files', {
+  return safeInvoke('send_files', {
     profileId,
     localPaths,
     remoteDir,
