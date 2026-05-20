@@ -11,6 +11,7 @@ build-artifacts/
 .env
 .env.local
 .env.*.local
+github_deploy_key.pub.txt
 
 # Logs
 *.log
