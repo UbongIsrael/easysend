@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+dist/
+src-tauri/target/
+src-tauri/gen/schemas/
+
+# Planning documents (not shipped)
+PLAN.md
+
+# Secrets
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Rust
+**/*.rs.bk
+
+# Lockfiles (library, not application — ignore unless publishing)
+package-lock.json
