@@ -138,7 +138,7 @@ sudo apt install -y \
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/easysend.git
+git clone https://github.com/UbongIsrael/easysend.git
 cd easysend
 
 # Install frontend dependencies

@@ -5,9 +5,7 @@ node_modules/
 dist/
 src-tauri/target/
 src-tauri/gen/schemas/
-
-# Planning documents (not shipped)
-PLAN.md
+build-artifacts/
 
 # Secrets
 .env
